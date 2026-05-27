@@ -1,4 +1,4 @@
-}package ec.edu.puce.githubclient.services
+package ec.edu.puce.githubclient.services
 
 import ec.edu.puce.githubclient.models.Repository
 import retrofit2.http.GET
