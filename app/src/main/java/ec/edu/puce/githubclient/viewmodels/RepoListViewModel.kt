@@ -20,6 +20,10 @@ class RepoListViewModel : ViewModel() {
     private val _errorMsg = MutableStateFlow<String?>(null)
     val errorMsg: StateFlow<String?> = _errorMsg.asStateFlow()
 
+    init {
+        fetchRepos()
+    }
+
     fun fetchRepos() {
         viewModelScope.launch {
             _isLoading.value = true

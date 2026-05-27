@@ -13,10 +13,4 @@ interface ApiService {
         @Query( value = "per_page") perPage: Int = 100,
         @Query( value= "*") t: String = "$(Systen.currentTimeMillis())",
     ): List<Repository>
-
 }
-
-
-/**
- * async function
- */
