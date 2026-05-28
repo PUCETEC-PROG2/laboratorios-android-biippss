@@ -21,7 +21,6 @@ class RepoListViewModel : ViewModel() {
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    // Opcional: Llamar a fetchRepos al iniciar el ViewModel
     init {
         fetchRepos()
     }
@@ -31,7 +30,6 @@ class RepoListViewModel : ViewModel() {
             _isLoading.value = true
             _error.value = null
             try {
-                // CORRECCIÓN: Usar RetrofitClient en lugar de RetriveClient
                 _repos.value = RetrofitClient.apiService.getRepositories()
             } catch (e: Exception) {
                 _error.value = e.localizedMessage ?: "Error al cargar repositorios"

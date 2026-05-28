@@ -28,7 +28,8 @@ import ec.edu.puce.githubclient.viewmodels.RepoListViewModel
 @Composable
 fun RepoList(
     modifier: Modifier = Modifier,
-    viewModel: RepoListViewModel = viewModel()
+    viewModel: RepoListViewModel = viewModel(),
+    onNavigatetoForm: () -> Unit = {}
 ) {
     val repos by viewModel.repos.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -37,7 +38,7 @@ fun RepoList(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* TODO: Navegar a RepoForm */ },
+                onClick = { onNavigatetoForm() },
                 shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -46,7 +47,7 @@ fun RepoList(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Agregar"
                 )
-            } // Aquí estaba el error de llaves/paréntesis extras
+            }
         }
     ) { innerPadding ->
         Box(
@@ -55,12 +56,10 @@ fun RepoList(
                 .padding(innerPadding)
         ) {
             if (isLoading) {
-                // Centramos el cargando
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
 
             error?.let { errorMessage ->
-                // Centramos el error
                 Text(
                     text = errorMessage,
                     color = MaterialTheme.colorScheme.error,
@@ -73,7 +72,7 @@ fun RepoList(
                     items(repos) { repo ->
                         RepoItem(
                             name = repo.name,
-                            description = repo.description ?: "Sin descripción", // Evita nulos
+                            description = repo.description ?: "Sin descripción",
                             avatarUrl = repo.owner.avatarUrl,
                             language = repo.language ?: "Desconocido"
                         )
@@ -88,8 +87,6 @@ fun RepoList(
 @Composable
 fun RepoListPreview() {
     GithubClientTheme {
-        // Nota: En el preview fallará si el ViewModel intenta hacer una red real.
-        // Es mejor pasar los datos directamente o usar un ViewModel mock.
         RepoList()
     }
 }
