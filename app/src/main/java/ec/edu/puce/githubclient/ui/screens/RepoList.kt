@@ -24,10 +24,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import ec.edu.puce.githubclient.ui.components.RepoItem
 import ec.edu.puce.githubclient.ui.theme.GithubClientTheme
 import ec.edu.puce.githubclient.viewmodels.RepoListViewModel
+import java.text.Format
+
 @Composable
 fun RepoList(
     modifier: Modifier = Modifier,
-    viewModel: RepoListViewModel = viewModel()) {
+    viewModel: RepoListViewModel = viewModel(),
+    onNavigateToForm: () -> Unit = {}
+    ) {
 
     val repos by viewModel.repos.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
