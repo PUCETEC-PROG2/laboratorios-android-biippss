@@ -8,10 +8,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -24,7 +30,9 @@ fun RepoItem(
     name: String,
     description: String?,
     avatarUrl: String,
-    language: String?
+    language: String?,
+    onEditClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {}
 ) {
     Card(
         modifier = Modifier
@@ -34,7 +42,8 @@ fun RepoItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(all = 16.dp)
+                .padding(all = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
                 model = avatarUrl,
@@ -45,7 +54,7 @@ fun RepoItem(
 
             Spacer(modifier = Modifier.width(width = 16.dp))
 
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = name,
                     style = MaterialTheme.typography.titleMedium,
@@ -57,6 +66,7 @@ fun RepoItem(
                     Text(
                         text = description,
                         style = MaterialTheme.typography.bodySmall,
+                        maxLines = 2
                     )
                 }
 
@@ -68,6 +78,22 @@ fun RepoItem(
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
+            }
+
+            IconButton(onClick = onEditClick) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Editar",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            IconButton(onClick = onDeleteClick) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Eliminar",
+                    tint = MaterialTheme.colorScheme.error
+                )
             }
         }
     }

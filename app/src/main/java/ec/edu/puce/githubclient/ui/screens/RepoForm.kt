@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,22 +34,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import ec.edu.puce.githubclient.models.Repository
 import ec.edu.puce.githubclient.ui.theme.GithubClientTheme
 import ec.edu.puce.githubclient.viewmodels.RepoFormViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RepoForm(
+    repoToEdit: Repository? = null,
     onBackClick: () -> Unit = {},
     onSaveSuccess: () -> Unit = {},
-    viewModel: RepoFormViewModel = viewModel()
+    viewModel: RepoFormViewModel = viewModel(),
 ) {
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMsg by viewModel.error.collectAsState()
     val isSuccess by viewModel.isSuccess.collectAsState()
 
-    var name by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf(repoToEdit?.name ?: "") }
+    var description by remember { mutableStateOf(repoToEdit?.description ?: "") }
 
     LaunchedEffect(key1 = isSuccess) {
         if (isSuccess) {
@@ -61,11 +63,11 @@ fun RepoForm(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Crear Repositorio") },
+                title = { Text(text = if (repoToEdit == null) "Crear Repositorio" else "Editar Repositorio") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Regresar",
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -97,8 +99,6 @@ fun RepoForm(
                 )
             }
 
-            // SE ELIMINÓ LA LLAVE EXTRA QUE CERRABA LA COLUMNA AQUÍ ABAJO
-
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -116,11 +116,18 @@ fun RepoForm(
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(
-                onClick = { viewModel.createRepo(name, description) },
+                onClick = {
+                    if (repoToEdit == null) {
+                        viewModel.createRepo(name, description)
+                    } else {
+                        // owner.login is definitely there in GithubUser
+                        viewModel.updateRepo(repoToEdit.owner.login, repoToEdit.name, name, description)
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Icon(
-                    imageVector = Icons.Default.Send,
+                    imageVector = Icons.AutoMirrored.Filled.Send,
                     contentDescription = "Guardar"
                 )
                 Spacer(modifier = Modifier.width(16.dp))

@@ -36,7 +36,31 @@ class RepoFormViewModel : ViewModel() {
                 RetrofitClient.apiService.createRepository(payload)
                 _isSuccess.value = true
             } catch (e: Exception) {
-                _error.value = e.localizedMessage ?: "Error desconocido"
+                _error.value = e.localizedMessage ?: "Error al crear repositorio"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateRepo(owner: String, oldName: String, newName: String, description: String) {
+        if (newName.isBlank()) {
+            _error.value = "El nombre no puede estar vacío"
+            return
+        }
+
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val payload = RepositoryPayload(
+                    name = newName,
+                    description = if (description.isBlank()) null else description
+                )
+                RetrofitClient.apiService.updateRepository(owner, oldName, payload)
+                _isSuccess.value = true
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage ?: "Error al actualizar repositorio"
             } finally {
                 _isLoading.value = false
             }
